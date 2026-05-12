@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录 · 卡片网格</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- 导航栏 + 登录（内联品牌+菜单+简洁登录） -->
+    <header class="navbar">
+        <div class="navbar__inner">
+            <a href="#" class="navbar__logo" aria-label="首页">◈ 品牌</a>
+            <!-- 汉堡按钮，纯css+js开关 -->
+            <button class="navbar__toggle" aria-label="切换菜单" aria-expanded="false">
+                <span class="toggle-bar"></span>
+                <span class="toggle-bar"></span>
+                <span class="toggle-bar"></span>
+            </button>
+            <nav class="navbar__menu" id="mainMenu">
+                <a href="#" class="navbar__link">首页</a>
+                <a href="#" class="navbar__link">关于</a>
+            </nav>
+            <!-- 登录表单 (极简,不超过60行但功能完整) -->
+            <div class="navbar__login">
+                <form id="loginForm" class="login-form">
+                    <label for="loginUser" class="sr-only">用户名</label>
+                    <input type="text" id="loginUser" placeholder="用户名" required>
+                    <label for="loginPass" class="sr-only">密码</label>
+                    <input type="password" id="loginPass" placeholder="密码" required>
+                    <button type="submit" class="login-btn">登录</button>
+                </form>
+                <p id="loginFeedback" class="feedback"></p>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="grid-section" aria-label="卡片网格">
+            <div class="card-grid" id="cardGrid"></div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <p>&copy; <span id="yearSpan"></span> 品牌 · 保留所有权利</p>
+    </footer>
+
+    <script src="script.js" defer></script>
+</body>
+</html>

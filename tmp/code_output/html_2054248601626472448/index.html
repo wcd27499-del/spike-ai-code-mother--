@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>卡片 · 点赞</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="navbar">
+        <div class="nav-brand">🍃 轻叶</div>
+        <button class="nav-toggle" aria-label="切换菜单" aria-expanded="false">
+            <span class="hamburger"></span>
+        </button>
+        <nav class="nav-menu" role="navigation" aria-label="主导航">
+            <ul class="nav-list">
+                <li><a href="#" class="nav-link active">首页</a></li>
+                <li><a href="#" class="nav-link">关于</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="card-grid" id="cardGrid" aria-label="卡片列表">
+            <!-- 由 JavaScript 动态生成 6 张卡片 -->
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <p>© <span id="year"></span> 轻叶 · 保留所有权利</p>
+    </footer>
+
+    <script src="script.js" defer></script>
+</body>
+</html>

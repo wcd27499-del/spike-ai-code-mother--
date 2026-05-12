@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5">
+  <title>印象·卡片</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="nav" role="banner">
+    <div class="nav__inner">
+      <span class="nav__logo">◈ 卡片集</span>
+      <button class="nav__toggle" aria-label="切换菜单" aria-expanded="false">☰</button>
+      <nav class="nav__menu" role="navigation" aria-label="主导航">
+        <a href="#" class="nav__link nav__link--active">首页</a>
+        <a href="#" class="nav__link">关于</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main" role="main">
+    <section class="grid" id="cardGrid" aria-label="卡片网格">
+      <!-- JS 动态渲染 6 张卡片 -->
+    </section>
+  </main>
+
+  <footer class="footer" role="contentinfo">
+    <p class="footer__text">© <span id="year"></span> 卡片集 · 指尖收藏</p>
+  </footer>
+
+  <script src="script.js" defer></script>
+</body>
+</html>

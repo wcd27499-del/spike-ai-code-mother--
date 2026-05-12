@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录 · 轻简卡片</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="navbar">
+        <div class="nav-brand">● LOGO</div>
+        <button class="nav-toggle" aria-label="切换菜单" aria-expanded="false">☰</button>
+        <nav class="nav-menu" role="navigation">
+            <a href="#">首页</a>
+            <a href="#">关于</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="login-section">
+            <h1>登 录</h1>
+            <form id="loginForm" novalidate>
+                <div class="field">
+                    <label for="email">邮箱</label>
+                    <input type="email" id="email" placeholder="you@example.com" required autocomplete="email">
+                    <span class="error" id="emailError"></span>
+                </div>
+                <div class="field">
+                    <label for="password">密码</label>
+                    <input type="password" id="password" placeholder="至少6位" required minlength="6" autocomplete="current-password">
+                    <span class="error" id="passwordError"></span>
+                </div>
+                <button type="submit" class="btn-primary">进入</button>
+                <p id="formMessage" aria-live="polite"></p>
+            </form>
+        </section>
+
+        <section class="cards-grid" id="cardsGrid" aria-label="卡片网格">
+            <!-- JS 动态渲染 -->
+        </section>
+    </main>
+
+    <footer id="footer">
+        <p>© <span id="year"></span> · 登录卡片应用</p>
+    </footer>
+
+    <script src="script.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>极简登陆 · 轻量卡片</title>
+  <style>
+    /* 全局重置，使用系统字体，移动优先 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(145deg, #f5f7fe 0%, #e9edf5 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      padding: 1.5rem;
+    }
+
+    /* 登陆卡片 —— 圆润、柔和阴影、毛玻璃点缀 */
+    .login-card {
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-radius: 32px;
+      box-shadow: 0 20px 40px -12px rgba(0, 20, 40, 0.25),
+                  0 6px 18px rgba(0, 0, 0, 0.03);
+      padding: 2rem 1.8rem 2rem;
+      width: 100%;
+      max-width: 400px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+
+    .login-card:hover {
+      transform: scale(1.01);
+      box-shadow: 0 24px 42px -10px rgba(0, 30, 60, 0.2);
+    }
+
+    /* 头部 */
+    .login-header {
+      text-align: center;
+      margin-bottom: 1.75rem;
+    }
+
+    .login-header h1 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: #1a2639;
+      margin-bottom: 0.2rem;
+    }
+
+    .login-header p {
+      color: #5b687c;
+      font-size: 0.9rem;
+      font-weight: 400;
+    }
+
+    /* 表单元素 */
+    .input-group {
+      margin-bottom: 1.3rem;
+    }
+
+    .input-group label {
+      display: block;
+      margin-bottom: 0.4rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #1f2a3f;
+      letter-spacing: 0.01em;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      background: rgba(255, 255, 255, 0.7);
+      border: 1.5px solid #dbe0ea;
+      border-radius: 18px;
+      font-size: 0.95rem;
+      transition: border 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+
+    .input-group input:focus {
+      border-color: #4f7df3;
+      box-shadow: 0 0 0 3px rgba(79, 125, 243, 0.2);
+    }
+
+    .input-group input::placeholder {
+      color: #a8b3c9;
+      font-weight: 350;
+    }
+
+    /* 登录按钮 */
+    .login-btn {
+      background: #1f2a3f;
+      border: none;
+      width: 100%;
+      padding: 0.8rem 0;
+      border-radius: 40px;
+      font-size: 1rem;
+      font-weight: 600;
+      color: white;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+      margin: 0.4rem 0 1rem;
+      box-shadow: 0 10px 16px -8px rgba(31, 42, 63, 0.15);
+    }
+
+    .login-btn:hover {
+      background: #2b3850;
+      box-shadow: 0 12px 24px -8px rgba(31, 42, 63, 0.2);
+    }
+
+    .login-btn:active {
+      transform: scale(0.97);
+    }
+
+    /* 提示信息 */
+    .message-area {
+      min-height: 1.8rem;
+      text-align: center;
+      font-size: 0.85rem;
+      font-weight: 450;
+    }
+
+    .message-area.success {
+      color: #1f8b4c;
+    }
+
+    .message-area.error {
+      color: #c7423a;
+    }
+
+    .footer-note {
+      text-align: center;
+      color: #6c7a90;
+      font-size: 0.75rem;
+      margin-top: 1rem;
+      border-top: 1px solid rgba(0,0,0,0.04);
+      padding-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <main class="login-card" role="main" aria-label="登陆卡片">
+    <div class="login-header">
+      <h1>⛅ 再 登 录</h1>
+      <p>输入账号密码 · 轻量演示</p>
+    </div>
+
+    <!-- 登陆表单 -->
+    <form id="loginForm" novalidate>
+      <div class="input-group">
+        <label for="username">账 号</label>
+        <input type="text" id="username" placeholder="例如 admin" autocomplete="off" aria-required="true">
+      </div>
+
+      <div class="input-group">
+        <label for="password">密 码</label>
+        <input type="password" id="password" placeholder="••••••••" aria-required="true">
+      </div>
+
+      <button type="submit" class="login-btn" aria-label="登录">进 入</button>
+
+      <div id="message" class="message-area" role="alert" aria-live="polite"></div>
+    </form>
+
+    <div class="footer-note">单文件 · 不超过60行核心逻辑</div>
+  </main>
+
+  <script>
+    (function() {
+      'use strict';
+      // 符合 “不超过60行” 的交互逻辑 —— 精简并包含边界处理
+
+      const form = document.getElementById('loginForm');
+      const usernameInput = document.getElementById('username');
+      const passwordInput = document.getElementById('password');
+      const messageEl = document.getElementById('message');
+
+      // 模拟验证：账号密码均非空即可（真实场景可扩展）
+      function validateCredentials(username, password) {
+        if (!username || username.trim() === '') {
+          return { valid: false, msg: '账号不能为空' };
+        }
+        if (!password || password.length === 0) {
+          return { valid: false, msg: '密码不能为空' };
+        }
+        // 演示边界：检查是否包含非法字符 (只允许字母、数字、下划线、@、.)
+        const allowedPattern = /^[\w@.]+$/;
+        if (!allowedPattern.test(username)) {
+          return { valid: false, msg: '账号含非法字符 (字母/数字/下划线/@/.)' };
+        }
+        if (password.length < 3) {
+          return { valid: false, msg: '密码长度至少3位' };
+        }
+        return { valid: true, msg: '✅ 欢迎！模拟登录成功 (无后端)' };
+      }
+
+      // 显示消息，带样式类
+      function showMessage(text, type) {
+        messageEl.textContent = text;
+        // 移除所有样式类型
+        messageEl.classList.remove('success', 'error');
+        if (type === 'success') {
+          messageEl.classList.add('success');
+        } else if (type === 'error') {
+          messageEl.classList.add('error');
+        }
+      }
+
+      // 处理登录提交
+      function handleLogin(event) {
+        event.preventDefault();          // 阻止表单默认提交
+
+        const username = usernameInput.value;
+        const password = passwordInput.value;
+
+        const result = validateCredentials(username, password);
+        if (!result.valid) {
+          showMessage('⚠️ ' + result.msg, 'error');
+          // 边界：输入无效时清空密码 (不保留明文，但保留账号方便修改)
+          passwordInput.value = '';
+          // 聚焦到第一个错误相关字段（简单处理）
+          if (!username.trim()) {
+            usernameInput.focus();
+          } else {
+            passwordInput.focus();
+          }
+          return;
+        }
+
+        // 成功 —— 模拟登录成功
+        showMessage(result.msg, 'success');
+        // 可选的演示成功反馈：清空输入（非必须，但保持干净）
+        // 正式场景可留空或跳转，这里仅模拟
+        usernameInput.value = '';
+        passwordInput.value = '';
+        // 聚焦到账号方便下一次
+        usernameInput.focus();
+
+        // 额外: 2.5秒后消除成功消息 (避免堆积)
+        setTimeout(() => {
+          if (messageEl.classList.contains('success')) {
+            messageEl.textContent = '';
+            messageEl.classList.remove('success');
+          }
+        }, 2800);
+      }
+
+      // 绑定提交事件
+      form.addEventListener('submit', handleLogin);
+
+      // 额外：实时清除错误提示（当用户开始输入时，提升体验）
+      function clearErrorOnInput() {
+        if (messageEl.classList.contains('error')) {
+          messageEl.textContent = '';
+          messageEl.classList.remove('error');
+        }
+      }
+      usernameInput.addEventListener('input', clearErrorOnInput);
+      passwordInput.addEventListener('input', clearErrorOnInput);
+
+      // 边界：页面加载完成后，初始焦点置于账号
+      window.addEventListener('DOMContentLoaded', function() {
+        usernameInput.focus();
+      });
+    })();
+  </script>
+</body>
+</html>

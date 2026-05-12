@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录 · 卡片墙</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <nav class="nav">
+            <a href="#" class="logo">◈ 登录</a>
+            <button class="hamburger" aria-label="切换菜单" aria-expanded="false">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
+            <ul class="nav-menu">
+                <li><a href="#" class="active">首页</a></li>
+                <li><a href="#">关于</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <!-- 登录表单：简约轻量，60行以内 -->
+        <section class="login-card">
+            <h2>欢迎回来</h2>
+            <form id="loginForm" novalidate>
+                <label for="email">邮箱</label>
+                <input type="email" id="email" placeholder="you@example.com" required autocomplete="email">
+                <span class="error-message" id="emailError"></span>
+
+                <label for="password">密码</label>
+                <input type="password" id="password" placeholder="******" required minlength="6" autocomplete="current-password">
+                <span class="error-message" id="passwordError"></span>
+
+                <button type="submit" id="submitBtn">登录</button>
+                <p class="form-foot">没有账户？<a href="#">注册</a></p>
+            </form>
+        </section>
+
+        <!-- 动态卡片网格 -->
+        <section class="grid-container" id="cardGrid" aria-label="卡片列表"></section>
+    </main>
+    <footer>
+        <p>© <span id="year">2025</span> 登录演示 · 卡片点赞</p>
+    </footer>
+    <script src="script.js" defer></script>
+</body>
+</html>
