@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>极简博客 · 三页</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="navbar">
+        <div class="brand" aria-label="博客品牌">📝 简谈</div>
+        <button class="hamburger" aria-label="菜单切换" id="menuToggle">☰</button>
+        <nav class="nav-menu" id="navMenu">
+            <a href="#" class="nav-link active">首页</a>
+            <a href="#" class="nav-link">关于</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="card-grid" id="cardGrid" aria-label="博客卡片列表">
+            <!-- 由 JavaScript 动态生成 6 张卡片 -->
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>© <span id="yearSpan"></span> 简谈博客 · 所有权利保留</p>
+    </footer>
+
+    <script src="script.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>任务记录 · 简单工具</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- 主体结构: 导航 + 卡片网格 + 页脚 -->
+    <header class="header">
+        <nav class="navbar container">
+            <a href="#" class="navbar__brand" aria-label="首页">
+                <span class="navbar__logo">📋 任务记</span>
+            </a>
+            <button class="navbar__toggle" aria-label="切换菜单" aria-expanded="false">
+                <span class="navbar__hamburger"></span>
+                <span class="navbar__hamburger"></span>
+                <span class="navbar__hamburger"></span>
+            </button>
+            <ul class="navbar__menu" role="menubar">
+                <li role="none"><a href="#" role="menuitem" class="navbar__link navbar__link--active">首页</a></li>
+                <li role="none"><a href="#" role="menuitem" class="navbar__link">关于</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="main container">
+        <section class="hero">
+            <h1 class="hero__title">记录你的任务</h1>
+            <p class="hero__subtitle">点击卡片上的 ❤️ 标记完成，轻松追踪进度</p>
+        </section>
+
+        <section class="card-grid" id="cardGrid" aria-label="任务列表网格">
+            <!-- 卡片由 JavaScript 动态生成 -->
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer__content">
+            <p class="footer__year">&copy; <span id="currentYear"></span> 任务记 · 简约版</p>
+        </div>
+    </footer>
+
+    <script src="script.js" defer></script>
+</body>
+</html>

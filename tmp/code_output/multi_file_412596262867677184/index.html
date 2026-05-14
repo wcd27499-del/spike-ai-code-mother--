@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>迷你博客</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav>
+        <div class="brand">📝 简记</div>
+        <ul class="menu" id="menu">
+            <li><a href="#" aria-current="page">首页</a></li>
+            <li><a href="#">归档</a></li>
+            <li><a href="#">关于</a></li>
+        </ul>
+        <button class="hamburger" id="hamburger" aria-label="菜单">☰</button>
+    </nav>
+
+    <main>
+        <h1>最近文章</h1>
+        <div class="card-grid" id="cardGrid">
+            <!-- 由 JS 动态生成 -->
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; <span id="year"></span> 迷你博客 · 保留所有权利</p>
+    </footer>
+
+    <script src="script.js" defer></script>
+</body>
+</html>

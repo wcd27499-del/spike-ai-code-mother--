@@ -1,0 +1,203 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    background: #f8faff;
+    color: #1e2a3a;
+    line-height: 1.5;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.navbar {
+    background: linear-gradient(135deg, #1e293b, #2d3b55);
+    color: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 2rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.brand {
+    font-size: 1.8rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.hamburger {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: #f1f5f9;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+.hamburger:focus { transform: scale(1.08); }
+
+.nav-menu {
+    display: flex;
+    gap: 2rem;
+}
+
+.nav-link {
+    color: #e0e7f0;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1.1rem;
+    padding: 0.4rem 0.2rem;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+}
+.nav-link:hover,
+.nav-link.active {
+    color: #ffffff;
+    border-bottom-color: #93c5fd;
+}
+.nav-link:focus-visible {
+    outline: 2px solid #93c5fd;
+    outline-offset: 4px;
+}
+
+.container {
+    flex: 1;
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1.5rem;
+    width: 100%;
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+}
+
+/* 卡片样式 */
+.card {
+    background: #ffffff;
+    border-radius: 24px;
+    box-shadow: 0 12px 28px rgba(0,0,0,0.04), 0 0 0 1px rgba(0,0,0,0.02);
+    padding: 1.8rem 1.5rem 1.8rem;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.25s ease, box-shadow 0.3s;
+}
+.card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 22px 38px rgba(0,0,0,0.08);
+}
+.card-image {
+    width: 100%;
+    height: 140px;
+    background: linear-gradient(145deg, #a2c2fa, #7aa3e0);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+    margin-bottom: 1.2rem;
+    color: #1e2a3a;
+}
+.card-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+    color: #0f172a;
+}
+.card-desc {
+    flex: 1;
+    font-size: 0.95rem;
+    color: #3a4b62;
+    margin-bottom: 1.2rem;
+    line-height: 1.5;
+}
+.card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid #e9edf3;
+    padding-top: 1rem;
+}
+.like-btn {
+    background: #eef2f8;
+    border: none;
+    border-radius: 40px;
+    padding: 0.6rem 1.2rem;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #1d2b3c;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+}
+.like-btn:hover {
+    background: #dce3ef;
+    transform: scale(1.02);
+}
+.like-btn:focus-visible {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+.like-count {
+    font-variant-numeric: tabular-nums;
+    min-width: 1.6rem;
+    text-align: center;
+}
+
+.footer {
+    background: #1e293b;
+    color: #b9c8e0;
+    text-align: center;
+    padding: 1.6rem 1rem;
+    margin-top: 2rem;
+    font-size: 0.95rem;
+}
+
+/* 平板 — 两列 */
+@media (max-width: 900px) {
+    .card-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+}
+
+/* 手机 — 单列 + 汉堡菜单 */
+@media (max-width: 640px) {
+    .navbar {
+        padding: 1rem 1.2rem;
+        flex-wrap: wrap;
+    }
+    .hamburger {
+        display: block;
+    }
+    .nav-menu {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        margin-top: 1rem;
+        gap: 0.4rem;
+        background: #1e293b;
+        border-radius: 16px;
+        padding: 0.8rem 0.5rem;
+    }
+    .nav-menu.active {
+        display: flex;
+    }
+    .nav-link {
+        padding: 0.6rem 0.8rem;
+        border-bottom: none;
+    }
+    .card-grid {
+        grid-template-columns: 1fr;
+        gap: 1.8rem;
+    }
+}

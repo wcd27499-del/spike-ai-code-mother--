@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>流光 · 志 | 博客</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar" aria-label="主导航">
+            <div class="nav-container">
+                <a href="#" class="brand" aria-label="首页">✧ 流光志</a>
+                <button class="hamburger" aria-label="切换菜单" aria-expanded="false">
+                    <span></span><span></span><span></span>
+                </button>
+                <ul class="nav-menu" role="menubar">
+                    <li role="none"><a href="#" role="menuitem" class="active">首页</a></li>
+                    <li role="none"><a href="#about" role="menuitem">关于</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="card-grid" id="blog-cards" aria-label="文章列表">
+            <!-- 卡片由 JS 动态渲染 -->
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; <span id="year"></span> 流光 · 志 · 静观其变</p>
+    </footer>
+
+    <script src="script.js" defer></script>
+</body>
+</html>

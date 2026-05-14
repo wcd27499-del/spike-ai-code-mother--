@@ -3,6 +3,7 @@ package com.spike.spikeaicodemother.core.saver;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
+import com.spike.spikeaicodemother.constant.AppConstant;
 import com.spike.spikeaicodemother.exception.BusinessException;
 import com.spike.spikeaicodemother.exception.ErrorCode;
 import com.spike.spikeaicodemother.model.enums.CodeGenTypeEnum;
@@ -16,13 +17,13 @@ import java.nio.charset.StandardCharsets;
  */
 public abstract class CodeFileSaverTemplate<T> {
     // 文件保存根目录
-    private static final String FILE_SAVE_ROOT_DIR = System.getProperty("user.dir") + "/tmp/code_output";
+    private static final String FILE_SAVE_ROOT_DIR = AppConstant.CODE_OUTPUT_ROOT_DIR;
 
-    protected final File saveCode(T result){
+    protected final File saveCode(T result,Long appId){
         //验证是否有值
         validateInput(result);
         //构建唯一目录
-        String baseDirPath = buildUniqueDir();
+        String baseDirPath = buildUniqueDir(appId);
         //保存文件
         saveFiles(result,baseDirPath);
         //返回文件对象
@@ -44,9 +45,9 @@ public abstract class CodeFileSaverTemplate<T> {
      * 构建唯一目录路径
      * @return 目录路径
      */
-    protected String buildUniqueDir(){
+    protected String buildUniqueDir(Long appId){
         String codeType = codeGenTypeEnum().getValue();
-        String fileName=StrUtil.format("{}_{}",codeType,IdUtil.getSnowflakeNextIdStr());
+        String fileName=StrUtil.format("{}_{}",codeType,appId);
         String dirPath=FILE_SAVE_ROOT_DIR+File.separator+fileName;
         FileUtil.mkdir(dirPath);
         return dirPath;

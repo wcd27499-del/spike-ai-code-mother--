@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>任务记录 · 简易看板</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- 语义化导航栏 (汉堡菜单移动端可折叠) -->
+    <header class="header" role="banner">
+        <nav class="nav" aria-label="主导航">
+            <div class="nav__brand" aria-label="任务记录">
+                <span class="nav__logo">📋 任务录</span>
+            </div>
+            <button class="nav__toggle" id="navToggle" aria-label="切换菜单" aria-expanded="false">
+                <span class="nav__toggle-bar"></span>
+                <span class="nav__toggle-bar"></span>
+                <span class="nav__toggle-bar"></span>
+            </button>
+            <ul class="nav__menu" id="navMenu" role="menubar">
+                <li role="none"><a href="#" class="nav__link nav__link--active" role="menuitem">首页</a></li>
+                <li role="none"><a href="#" class="nav__link" role="menuitem">关于</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main role="main">
+        <!-- 卡片网格容器 (由 JavaScript 动态生成 6 张卡片) -->
+        <section class="card-grid" id="cardGrid" aria-label="任务卡片列表">
+            <!-- JS 动态渲染 -->
+        </section>
+    </main>
+
+    <!-- 页脚：版权年份动态更新 -->
+    <footer class="footer" role="contentinfo">
+        <p class="footer__copy" id="footerCopy">© <span id="year"></span> 任务记录工具 · 简易看板</p>
+    </footer>
+
+    <!-- 引入主脚本 (defer 确保 DOM 解析后执行) -->
+    <script src="script.js" defer></script>
+</body>
+</html>
