@@ -1,0 +1,28 @@
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,-apple-system,sans-serif;background:#f5f7fa;color:#222;line-height:1.5;min-height:100vh;display:flex;flex-direction:column}
+.nav{background:#fff;display:flex;flex-wrap:wrap;align-items:center;padding:.7rem 1.5rem;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.nav__logo{font-weight:700;font-size:1.2rem;margin-right:auto}
+.nav__toggle{display:none;background:transparent;border:1px solid #ccc;color:#333;font-size:1.4rem;padding:0 .5rem .15rem;border-radius:6px;cursor:pointer}
+.nav__menu{display:flex;gap:1.8rem;list-style:none}
+.nav__link{color:#444;text-decoration:none;font-weight:500;padding:.2rem 0;border-bottom:2px solid transparent;transition:.1s}
+.nav__link:hover{color:#000;border-bottom-color:#888}
+@media(max-width:640px){
+.nav__toggle{display:block}
+.nav__menu{display:none;flex-direction:column;width:100%;margin-top:.6rem;background:#fff;padding:.6rem 1rem;border-radius:8px;border:1px solid #eee}
+.nav__menu--open{display:flex}
+}
+.grid{display:grid;grid-template-columns:1fr;gap:1.5rem;padding:2rem 1.5rem;max-width:1100px;margin:0 auto;width:100%;flex:1}
+@media(min-width:600px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:960px){.grid{grid-template-columns:repeat(3,1fr)}}
+.card{background:#fff;border-radius:16px;padding:1.2rem 1.2rem 1.5rem;box-shadow:0 2px 8px rgba(0,0,0,.04);display:flex;flex-direction:column;transition:box-shadow .15s}
+.card:hover{box-shadow:0 6px 16px rgba(0,0,0,.06)}
+.card__img{width:100%;aspect-ratio:16/9;background:#eef2f7;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:2.8rem;margin-bottom:.5rem}
+.card__title{font-size:1.2rem;font-weight:600;margin:.3rem 0 .15rem;color:#111}
+.card__desc{font-size:.88rem;color:#555;margin-bottom:.8rem;flex:1}
+.card__like-area{display:flex;align-items:center;gap:.5rem}
+.card__btn{background:#eef2f6;border:none;padding:.4rem .9rem;border-radius:30px;font-size:.85rem;font-weight:500;color:#333;cursor:pointer;display:inline-flex;align-items:center;gap:.25rem;transition:background .1s}
+.card__btn:hover{background:#dce2ec}
+.card__btn:active{background:#cdd5e0}
+.card__count{font-weight:600;min-width:1rem;color:#222}
+.foot{text-align:center;padding:1.2rem;color:#666;font-size:.85rem;border-top:1px solid #e5e9ef;margin-top:.5rem}
+.foot span{font-weight:500;color:#333}

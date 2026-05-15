@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>简约博客 · 三页</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header" role="banner">
+        <nav class="navbar" aria-label="主导航">
+            <span class="logo" aria-label="博客品牌">📘 简记</span>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#" class="active" aria-current="page">首页</a></li>
+                <li><a href="#">关于</a></li>
+            </ul>
+            <button class="hamburger" id="hamburgerBtn" aria-label="切换导航菜单" aria-expanded="false" aria-controls="navMenu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
+        </nav>
+    </header>
+
+    <main class="container" role="main">
+        <section class="card-grid" id="cardGrid" aria-label="文章卡片列表">
+            <!-- 卡片由 JavaScript 动态渲染 -->
+        </section>
+    </main>
+
+    <footer class="footer" role="contentinfo">
+        <p>&copy; <span id="year"></span> 简记博客 · 用心记录</p>
+    </footer>
+
+    <script src="script.js" defer></script>
+</body>
+</html>

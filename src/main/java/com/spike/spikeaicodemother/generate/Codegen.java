@@ -12,7 +12,7 @@ import java.util.Map;
 public class Codegen {
 
     //设置生成表的字符串数组
-    private final static String[] TABLE_NAMES={"app"};
+    private final static String[] TABLE_NAMES={"chat_history"};
 
     public static void main(String[] args) {
         //使用hutool工具包

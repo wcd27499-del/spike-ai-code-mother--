@@ -3,6 +3,7 @@ package com.spike.spikeaicodemother.core;
 import com.jfinal.template.stat.ast.Case;
 import com.jfinal.template.stat.ast.Switch;
 import com.spike.spikeaicodemother.ai.AiCodeGenerateService;
+import com.spike.spikeaicodemother.ai.AiCodeGenerateServiceFactory;
 import com.spike.spikeaicodemother.ai.model.HtmlCodeResult;
 import com.spike.spikeaicodemother.ai.model.MultiFileCodeResult;
 import com.spike.spikeaicodemother.core.parser.CodeParserExecutor;
@@ -25,7 +26,9 @@ import java.io.File;
 public class AiCodeGeneratorFacade {
 
     @Resource
-    private AiCodeGenerateService aiCodeGeneratorService;
+    private AiCodeGenerateServiceFactory aiCodeGenerateServiceFactory;
+
+
 
     /**
      *
@@ -64,6 +67,9 @@ public class AiCodeGeneratorFacade {
      * @return 保存的目录
      */
     public File generateAndSaveCode(String userMessage, CodeGenTypeEnum codeGenTypeEnum,Long appId) {
+        //根据appid获取对应的ai服务实例
+        AiCodeGenerateService aiCodeGeneratorService=aiCodeGenerateServiceFactory.
+                getAiCodeGenerateService(appId);
 
         if (codeGenTypeEnum==null){
             throw new BusinessException(ErrorCode.PARAMS_ERROR,"参数不能为空");
@@ -92,6 +98,9 @@ public class AiCodeGeneratorFacade {
      * @param appId 应用id
      */
     public Flux<String> generateAndSaveCodeStream(String userMessage, CodeGenTypeEnum codeGenTypeEnum,Long appId) {
+        //根据appid获取对应的ai服务实例
+        AiCodeGenerateService aiCodeGeneratorService=aiCodeGenerateServiceFactory.
+                getAiCodeGenerateService(appId);
         if (codeGenTypeEnum == null) {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "生成类型为空");
         }

@@ -14,17 +14,23 @@ import com.spike.spikeaicodemother.genresult.entity.App;
 import com.spike.spikeaicodemother.genresult.entity.User;
 import com.spike.spikeaicodemother.genresult.mapper.AppMapper;
 import com.spike.spikeaicodemother.genresult.service.AppService;
+import com.spike.spikeaicodemother.genresult.service.ChatHistoryService;
 import com.spike.spikeaicodemother.genresult.service.UserService;
 import com.spike.spikeaicodemother.model.dto.app.AppQueryRequest;
+import com.spike.spikeaicodemother.model.enums.ChatHistoryMessageTypeEnum;
 import com.spike.spikeaicodemother.model.enums.CodeGenTypeEnum;
 import com.spike.spikeaicodemother.model.vo.AppVO;
 import com.spike.spikeaicodemother.model.vo.UserVO;
 import com.spike.spikeaicodemother.utils.ThrowUtils;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.View;
 import reactor.core.publisher.Flux;
 
 import java.io.File;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,11 +44,16 @@ import java.util.stream.Collectors;
  * @author spike
  */
 @Service
+@Slf4j
 public class AppServiceImpl extends ServiceImpl<AppMapper, App>  implements AppService{
     @Resource
     private UserService userService;
     @Resource
     private AiCodeGeneratorFacade aiCodeGeneratorFacade;
+    @Resource
+    private ChatHistoryService chatHistoryService;
+
+
 
     @Override
     public AppVO getAppVO(App app) {
@@ -61,6 +72,29 @@ public class AppServiceImpl extends ServiceImpl<AppMapper, App>  implements AppS
             appVO.setUser(userVO);
         }
         return appVO;
+    }
+
+    @Override
+    public boolean removeById(Serializable id) {
+        if (id == null) {
+            return false;
+        }
+        //转换id类型为Long
+        Long appId = Long.valueOf(id.toString());
+        if (appId<0){
+            return false;
+        }
+        //先删除关联对话历史
+        try {
+            chatHistoryService.removeById(appId);
+
+        }catch (Exception e){
+            //记录日志但不影响应用删除
+            log.error(e.getMessage());
+        }
+        //删除应用
+        return super.removeById(id);
+
     }
 
     @Override
@@ -127,8 +161,36 @@ public class AppServiceImpl extends ServiceImpl<AppMapper, App>  implements AppS
         if (codeGenTypeEnum == null) {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "不支持的代码生成类型");
         }
-        // 5. 调用 AI 生成代码
-        return aiCodeGeneratorFacade.generateAndSaveCodeStream(message, codeGenTypeEnum, appId);
+        //5.通过校验后，添加用户消息到对话历史
+        chatHistoryService.addMessage(appId,message,
+                ChatHistoryMessageTypeEnum.USER.getValue(),
+                loginUser.getId());
+        // 6. 调用 AI 生成代码
+        Flux<String> stringFlux = aiCodeGeneratorFacade.
+                generateAndSaveCodeStream(message, codeGenTypeEnum, appId);
+        //7.收集ai响应内容并在完成后记录到对话历史中
+        StringBuilder aiStringBuilder = new StringBuilder();
+        return stringFlux.map(chunk->{
+            //收集ai响应内容
+            aiStringBuilder.append(chunk);
+            return chunk;
+        }).doOnComplete(()->{
+            //流式响应完成后，把ai响应的消息内容添加到对话历史中
+            String aiResponse = aiStringBuilder.toString();
+            if (StrUtil.isNotBlank(aiResponse)) {
+                chatHistoryService.
+                        addMessage(appId,aiResponse,ChatHistoryMessageTypeEnum.AI.getValue(),
+                                loginUser.getId());
+
+            }
+        }).doOnError(error->{
+            //如果ai回复失败，也要记录错误消息
+            String errorMessage="AI回复失败"+error.getMessage();
+            chatHistoryService.addMessage(appId,errorMessage,ChatHistoryMessageTypeEnum.AI.getValue(),
+                    loginUser.getId());
+        });
+
+
     }
 
     @Override

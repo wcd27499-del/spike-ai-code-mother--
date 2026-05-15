@@ -1,0 +1,223 @@
+/* 基础重置 & 响应式设计 */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+    background: #f8fafc;
+    color: #1e293b;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* 导航栏 — flex + 汉堡菜单 */
+.header {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: #f1f5f9;
+    padding: 0 1.25rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    height: 64px;
+}
+.logo {
+    font-weight: 700;
+    font-size: 1.5rem;
+    letter-spacing: -0.02em;
+    background: linear-gradient(to right, #38bdf8, #818cf8);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+.nav-menu {
+    display: flex;
+    list-style: none;
+    gap: 2rem;
+    transition: all 0.3s ease;
+}
+.nav-menu a {
+    color: #e2e8f0;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.4rem 0;
+    border-bottom: 2px solid transparent;
+    transition: border-color 0.2s, color 0.2s;
+}
+.nav-menu a:hover,
+.nav-menu a.active {
+    color: #ffffff;
+    border-bottom-color: #38bdf8;
+}
+.hamburger {
+    display: none;          /* 桌面隐藏 */
+    flex-direction: column;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem;
+    gap: 5px;
+}
+.bar {
+    display: block;
+    width: 28px;
+    height: 3px;
+    background: #f1f5f9;
+    border-radius: 3px;
+    transition: all 0.2s;
+}
+
+/* 卡片网格 — 移动优先 */
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 2.5rem auto;
+    flex: 1;
+}
+.card-grid {
+    display: grid;
+    grid-template-columns: 1fr;            /* 手机单列 */
+    gap: 2rem 1.5rem;
+    justify-items: center;
+}
+/* 平板 ≥ 600px 两列 */
+@media (min-width: 600px) {
+    .card-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+/* 桌面 ≥ 960px 三列 */
+@media (min-width: 960px) {
+    .card-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    .hamburger {
+        display: none !important;          /* 桌面强制隐藏汉堡 */
+    }
+}
+
+/* 移动端显示汉堡菜单，且点击展开 */
+@media (max-width: 959px) {
+    .hamburger {
+        display: flex;
+    }
+    .nav-menu {
+        position: absolute;
+        top: 64px;
+        left: 0;
+        right: 0;
+        background: #0f172a;
+        flex-direction: column;
+        align-items: center;
+        padding: 1.5rem 0;
+        gap: 1.2rem;
+        box-shadow: 0 12px 28px rgba(0,0,0,0.3);
+        transform: scaleY(0);
+        transform-origin: top center;
+        opacity: 0;
+        pointer-events: none;
+        transition: transform 0.25s ease, opacity 0.2s;
+    }
+    .nav-menu.active {
+        transform: scaleY(1);
+        opacity: 1;
+        pointer-events: auto;
+    }
+}
+
+/* 卡片样式 */
+.card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 1.5rem 1.25rem 1rem;
+    box-shadow: 0 10px 20px -8px rgba(0, 0, 0, 0.08), 0 4px 8px rgba(0,0,0,0.02);
+    width: 100%;
+    max-width: 380px;
+    transition: transform 0.15s ease, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+}
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 20px 30px -12px rgba(0, 0, 0, 0.12);
+}
+.card-image {
+    width: 100%;
+    height: 150px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3.5rem;
+    background: linear-gradient(145deg, #dbeafe, #e0e7ff);
+    margin-bottom: 1rem;
+    transition: background 0.2s;
+}
+.card h3 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+    color: #0f172a;
+}
+.card p {
+    font-size: 0.95rem;
+    color: #475569;
+    margin-bottom: 1rem;
+    flex: 1;
+}
+.card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 0.75rem;
+    margin-top: auto;
+}
+.like-btn {
+    background: transparent;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 40px;
+    padding: 0.4rem 1.1rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+    background: #f8fafc;
+    color: #334155;
+}
+.like-btn:hover,
+.like-btn:focus-visible {
+    background: #eef2ff;
+    border-color: #818cf8;
+    color: #4338ca;
+    box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.15);
+}
+.like-btn.liked {
+    background: #eef2ff;
+    border-color: #6366f1;
+    color: #4338ca;
+}
+.like-count {
+    min-width: 1.2rem;
+    font-variant-numeric: tabular-nums;
+}
+
+/* 页脚 */
+.footer {
+    background: #0f172a;
+    color: #94a3b8;
+    text-align: center;
+    padding: 1.8rem 1.25rem;
+    margin-top: 2rem;
+    font-size: 0.9rem;
+    border-top: 1px solid #1e293b;
+}
+.footer p { margin: 0; }

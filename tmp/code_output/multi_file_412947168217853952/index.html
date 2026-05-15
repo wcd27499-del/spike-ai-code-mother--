@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>简博客 · 卡片流</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- 语义化导航栏: 品牌 + 汉堡菜单 (移动端折叠) -->
+    <header class="header">
+        <nav class="nav container" aria-label="主导航">
+            <a href="#" class="nav__logo" aria-label="首页">📘 简博客</a>
+            <button class="nav__toggle" aria-label="切换菜单" aria-expanded="false">
+                <span class="nav__hamburger"></span>
+            </button>
+            <ul class="nav__menu" id="navMenu">
+                <li><a href="#" class="nav__link" aria-current="page">首页</a></li>
+                <li><a href="#" class="nav__link">关于</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- 主区域: 动态卡片网格 -->
+    <main class="main container">
+        <section class="grid" id="cardGrid" aria-label="文章卡片列表">
+            <!-- 卡片由 JavaScript 动态生成 -->
+        </section>
+    </main>
+
+    <!-- 页脚: 版权年份动态更新 -->
+    <footer class="footer">
+        <p class="footer__text" id="copyright">© 2025 简博客 · 源自原创</p>
+    </footer>
+
+    <script src="script.js" defer></script>
+</body>
+</html>

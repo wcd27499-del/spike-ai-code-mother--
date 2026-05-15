@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>简洁笔记</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="nav">
+        <span class="nav__logo">📘 笔记</span>
+        <button class="nav__toggle" aria-label="菜单">☰</button>
+        <ul class="nav__menu">
+            <li><a href="#" class="nav__link" aria-current="page">首页</a></li>
+            <li><a href="#" class="nav__link">关于</a></li>
+        </ul>
+    </header>
+    <main class="grid" id="cardGrid" role="main"></main>
+    <footer class="foot">&copy; <span id="year"></span> 简洁笔记</footer>
+    <script src="script.js" defer></script>
+</body>
+</html>
