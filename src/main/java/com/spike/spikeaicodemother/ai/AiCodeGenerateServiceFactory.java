@@ -4,8 +4,13 @@ package com.spike.spikeaicodemother.ai;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import com.spike.spikeaicodemother.core.tool.FileWriteTool;
+import com.spike.spikeaicodemother.exception.BusinessException;
+import com.spike.spikeaicodemother.exception.ErrorCode;
 import com.spike.spikeaicodemother.genresult.service.ChatHistoryService;
+import com.spike.spikeaicodemother.model.enums.CodeGenTypeEnum;
 import dev.langchain4j.community.store.memory.chat.redis.RedisChatMemoryStore;
+import dev.langchain4j.data.message.ToolExecutionResultMessage;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.chat.StreamingChatModel;
@@ -27,7 +32,9 @@ public class AiCodeGenerateServiceFactory {
     @Resource
     private ChatModel chatModel;
     @Resource
-    private StreamingChatModel streamingChatModel;
+    private StreamingChatModel openAiStreamingChatModel;
+    @Resource
+    private StreamingChatModel reasoningStreamingChatModel;
     @Resource
     private RedisChatMemoryStore redisChatMemoryStore;
     @Resource
@@ -40,7 +47,7 @@ public class AiCodeGenerateServiceFactory {
      * -写入后30分钟过期
      * -访问后10分钟过期
      */
-    private final Cache<Long,AiCodeGenerateService> serviceCache= Caffeine.newBuilder()
+    private final Cache<String,AiCodeGenerateService> serviceCache= Caffeine.newBuilder()
             .maximumSize(1000)
             .expireAfterWrite(Duration.ofMinutes(30))
             .expireAfterAccess(Duration.ofMinutes(10))
@@ -49,17 +56,27 @@ public class AiCodeGenerateServiceFactory {
             }).build();
 
     /**
-     * 根据appId获取服务（带缓存）
+     * 根据appId获取服务（带缓冲）这个方法是为了兼容历史逻辑
      * @param appId
      * @return
      */
     public AiCodeGenerateService getAiCodeGenerateService(Long appId) {
-        return serviceCache.get(appId,this::createAiCodeGenerateService);
+        return getAiCodeGenerateService(appId,CodeGenTypeEnum.HTML);
+    }
+
+    /**
+     * 根据appId获取服务（带缓存）
+     * @param appId
+     * @return
+     */
+    public AiCodeGenerateService getAiCodeGenerateService(Long appId,CodeGenTypeEnum codeGenType) {
+        String cacheKey=buildCacheKey(appId,codeGenType);
+        return serviceCache.get(cacheKey, Key->createAiCodeGenerateService(appId,codeGenType));
 
     }
 
 
-    public AiCodeGenerateService createAiCodeGenerateService(Long appId) {
+    public AiCodeGenerateService createAiCodeGenerateService(Long appId, CodeGenTypeEnum codeGenType) {
     log.info("为appId：{}创建新的AI服务实例",appId);
     //根据appId构建独立的对话记忆
         MessageWindowChatMemory chatMemory = MessageWindowChatMemory.builder()
@@ -69,11 +86,34 @@ public class AiCodeGenerateServiceFactory {
                 .build();
         //从数据库加载历史对话到记忆中
         chatHistoryService.loadChatHistoryToMemory(appId,chatMemory,10);
-        return AiServices.builder(AiCodeGenerateService.class)
-                .chatModel(chatModel)
-                .streamingChatModel(streamingChatModel)
-                .chatMemory(chatMemory)
-                .build();
+        //根据代码生成类型选择不同的模型配置
+        return switch (codeGenType){
+            case VUE_PROJECT -> AiServices.builder(AiCodeGenerateService.class)
+                    .streamingChatModel(reasoningStreamingChatModel)
+                    .chatMemoryProvider(memoryId-> chatMemory)
+                    .tools(new FileWriteTool())
+                    .hallucinatedToolNameStrategy(toolExecutionRequest -> ToolExecutionResultMessage
+                            .from(toolExecutionRequest,"Error: there is no tool called"+toolExecutionRequest.name()))
+                    .build();
+            //HTML和多文件生成使用默认模型
+            case HTML,MULTI_FILE ->AiServices.builder(AiCodeGenerateService.class)
+                    .chatModel(chatModel)
+                    .streamingChatModel(openAiStreamingChatModel)
+                    .chatMemory(chatMemory)
+                    .build();
+            default -> throw new BusinessException(ErrorCode.SYSTEM_ERROR,"不支持代码生成类型："+codeGenType.getValue());
+
+        };
+    }
+
+    /**
+     * 构建缓存键
+     * @param appId
+     * @param codeGenType
+     * @return
+     */
+    private String buildCacheKey(Long appId, CodeGenTypeEnum codeGenType) {
+        return appId + "-" + codeGenType.getValue();
     }
     /**
      * 默认提供一个 Bean

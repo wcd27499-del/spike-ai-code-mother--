@@ -1,16 +1,23 @@
 package com.spike.spikeaicodemother.core;
 
+import cn.hutool.json.JSONUtil;
 import com.jfinal.template.stat.ast.Case;
 import com.jfinal.template.stat.ast.Switch;
 import com.spike.spikeaicodemother.ai.AiCodeGenerateService;
 import com.spike.spikeaicodemother.ai.AiCodeGenerateServiceFactory;
 import com.spike.spikeaicodemother.ai.model.HtmlCodeResult;
 import com.spike.spikeaicodemother.ai.model.MultiFileCodeResult;
+import com.spike.spikeaicodemother.ai.model.message.AiResponseMessage;
+import com.spike.spikeaicodemother.ai.model.message.ToolExecutedMessage;
+import com.spike.spikeaicodemother.ai.model.message.ToolRequestMessage;
 import com.spike.spikeaicodemother.core.parser.CodeParserExecutor;
 import com.spike.spikeaicodemother.core.saver.CodeFileSaverExecutor;
 import com.spike.spikeaicodemother.exception.BusinessException;
 import com.spike.spikeaicodemother.exception.ErrorCode;
 import com.spike.spikeaicodemother.model.enums.CodeGenTypeEnum;
+import dev.langchain4j.model.chat.response.ChatResponse;
+import dev.langchain4j.service.TokenStream;
+import dev.langchain4j.service.tool.ToolExecution;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -69,7 +76,7 @@ public class AiCodeGeneratorFacade {
     public File generateAndSaveCode(String userMessage, CodeGenTypeEnum codeGenTypeEnum,Long appId) {
         //根据appid获取对应的ai服务实例
         AiCodeGenerateService aiCodeGeneratorService=aiCodeGenerateServiceFactory.
-                getAiCodeGenerateService(appId);
+                getAiCodeGenerateService(appId,codeGenTypeEnum);
 
         if (codeGenTypeEnum==null){
             throw new BusinessException(ErrorCode.PARAMS_ERROR,"参数不能为空");
@@ -100,7 +107,7 @@ public class AiCodeGeneratorFacade {
     public Flux<String> generateAndSaveCodeStream(String userMessage, CodeGenTypeEnum codeGenTypeEnum,Long appId) {
         //根据appid获取对应的ai服务实例
         AiCodeGenerateService aiCodeGeneratorService=aiCodeGenerateServiceFactory.
-                getAiCodeGenerateService(appId);
+                getAiCodeGenerateService(appId,codeGenTypeEnum);
         if (codeGenTypeEnum == null) {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "生成类型为空");
         }
@@ -114,12 +121,48 @@ public class AiCodeGeneratorFacade {
                 Flux<String> resultFlux = aiCodeGeneratorService.generateMultiFileCodeStream(userMessage);
                 yield this.processCodeStream(resultFlux, codeGenTypeEnum,appId);
             }
+            case VUE_PROJECT -> {
+                TokenStream codeStream = aiCodeGeneratorService.generateVueProjectCodeStream(appId, userMessage);
+                yield this.processTokenStream(codeStream);
+            }
             default -> {
                 String errorMessage = "不支持的生成类型：" + codeGenTypeEnum.getValue();
                 throw new BusinessException(ErrorCode.SYSTEM_ERROR, errorMessage);
             }
         };
     }
+
+    /**
+     * 将 TokenStream 转换为 Flux<String>，并传递工具调用信息
+     *
+     * @param tokenStream TokenStream 对象
+     * @return Flux<String> 流式响应
+     */
+    private Flux<String> processTokenStream(TokenStream tokenStream) {
+        return Flux.create(sink -> {
+            tokenStream.onPartialResponse((String partialResponse) -> {
+                        AiResponseMessage aiResponseMessage = new AiResponseMessage(partialResponse);
+                        sink.next(JSONUtil.toJsonStr(aiResponseMessage));
+                    })
+                    .onPartialToolExecutionRequest((index, toolExecutionRequest) -> {
+                        ToolRequestMessage toolRequestMessage = new ToolRequestMessage(toolExecutionRequest);
+                        sink.next(JSONUtil.toJsonStr(toolRequestMessage));
+                    })
+                    .onToolExecuted((ToolExecution toolExecution) -> {
+                        ToolExecutedMessage toolExecutedMessage = new ToolExecutedMessage(toolExecution);
+                        sink.next(JSONUtil.toJsonStr(toolExecutedMessage));
+                    })
+                    .onCompleteResponse((ChatResponse response) -> {
+                        sink.complete();
+                    })
+                    .onError((Throwable error) -> {
+                        error.printStackTrace();
+                        sink.error(error);
+                    })
+                    .start();
+        });
+    }
+
 
 //    /**生成多文件流式的代码并保存（流式）
 //     *

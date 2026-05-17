@@ -8,6 +8,8 @@ import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 import com.spike.spikeaicodemother.constant.AppConstant;
 import com.spike.spikeaicodemother.core.AiCodeGeneratorFacade;
+import com.spike.spikeaicodemother.core.builder.VueProjectBuilder;
+import com.spike.spikeaicodemother.core.handler.StreamHandlerExecutor;
 import com.spike.spikeaicodemother.exception.BusinessException;
 import com.spike.spikeaicodemother.exception.ErrorCode;
 import com.spike.spikeaicodemother.genresult.entity.App;
@@ -52,6 +54,10 @@ public class AppServiceImpl extends ServiceImpl<AppMapper, App>  implements AppS
     private AiCodeGeneratorFacade aiCodeGeneratorFacade;
     @Resource
     private ChatHistoryService chatHistoryService;
+    @Resource
+    private StreamHandlerExecutor streamHandlerExecutor;
+    @Resource
+    private VueProjectBuilder vueProjectBuilder;
 
 
 
@@ -161,34 +167,13 @@ public class AppServiceImpl extends ServiceImpl<AppMapper, App>  implements AppS
         if (codeGenTypeEnum == null) {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "不支持的代码生成类型");
         }
-        //5.通过校验后，添加用户消息到对话历史
-        chatHistoryService.addMessage(appId,message,
-                ChatHistoryMessageTypeEnum.USER.getValue(),
-                loginUser.getId());
-        // 6. 调用 AI 生成代码
-        Flux<String> stringFlux = aiCodeGeneratorFacade.
-                generateAndSaveCodeStream(message, codeGenTypeEnum, appId);
-        //7.收集ai响应内容并在完成后记录到对话历史中
-        StringBuilder aiStringBuilder = new StringBuilder();
-        return stringFlux.map(chunk->{
-            //收集ai响应内容
-            aiStringBuilder.append(chunk);
-            return chunk;
-        }).doOnComplete(()->{
-            //流式响应完成后，把ai响应的消息内容添加到对话历史中
-            String aiResponse = aiStringBuilder.toString();
-            if (StrUtil.isNotBlank(aiResponse)) {
-                chatHistoryService.
-                        addMessage(appId,aiResponse,ChatHistoryMessageTypeEnum.AI.getValue(),
-                                loginUser.getId());
+// 5. 通过校验后，添加用户消息到对话历史
+        chatHistoryService.addMessage(appId, message, ChatHistoryMessageTypeEnum.USER.getValue(), loginUser.getId());
+// 6. 调用 AI 生成代码（流式）
+        Flux<String> codeStream = aiCodeGeneratorFacade.generateAndSaveCodeStream(message, codeGenTypeEnum, appId);
+// 7. 收集 AI 响应内容并在完成后记录到对话历史
+        return streamHandlerExecutor.doExecute(codeStream, chatHistoryService, appId, loginUser, codeGenTypeEnum);
 
-            }
-        }).doOnError(error->{
-            //如果ai回复失败，也要记录错误消息
-            String errorMessage="AI回复失败"+error.getMessage();
-            chatHistoryService.addMessage(appId,errorMessage,ChatHistoryMessageTypeEnum.AI.getValue(),
-                    loginUser.getId());
-        });
 
 
     }
@@ -218,15 +203,29 @@ public class AppServiceImpl extends ServiceImpl<AppMapper, App>  implements AppS
         String sourceDirName=codeGenType+"_"+appId;
         String sourceDirPath= AppConstant.CODE_OUTPUT_ROOT_DIR + File.separator+sourceDirName;
 
-        //检查源目录是否存在
-        File file = new File(sourceDirPath);
-        if (!file.exists() || !file.isDirectory()) {
-            throw new BusinessException(ErrorCode.SYSTEM_ERROR,"应用代码不存在，请先生成代码");
+        // 6. 检查源目录是否存在
+        File sourceDir = new File(sourceDirPath);
+        if (!sourceDir.exists() || !sourceDir.isDirectory()) {
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "应用代码不存在，请先生成代码");
         }
-        //复制文件到部署文件
-        String deployDirPath=AppConstant.CODE_DEPLOY_ROOT_DIR+File.separator+deployKey;
+// 7. Vue 项目特殊处理：执行构建
+        CodeGenTypeEnum codeGenTypeEnum = CodeGenTypeEnum.getEnumByValue(codeGenType);
+        if (codeGenTypeEnum == CodeGenTypeEnum.VUE_PROJECT) {
+            // Vue 项目需要构建
+            boolean buildSuccess = vueProjectBuilder.buildProject(sourceDirPath);
+            ThrowUtils.throwIf(!buildSuccess, ErrorCode.SYSTEM_ERROR, "Vue 项目构建失败，请检查代码和依赖");
+            // 检查 dist 目录是否存在
+            File distDir = new File(sourceDirPath, "dist");
+            ThrowUtils.throwIf(!distDir.exists(), ErrorCode.SYSTEM_ERROR, "Vue 项目构建完成但未生成 dist 目录");
+            // 将 dist 目录作为部署源
+            sourceDir = distDir;
+            log.info("Vue 项目构建成功，将部署 dist 目录: {}", distDir.getAbsolutePath());
+        }
+// 8. 复制文件到部署目录
+        String deployDirPath = AppConstant.CODE_DEPLOY_ROOT_DIR + File.separator + deployKey;
+
         try {
-            FileUtil.copyContent(file,new File(deployDirPath),true);
+            FileUtil.copyContent(sourceDir,new File(deployDirPath),true);
         }catch (Exception e){
             throw new BusinessException(ErrorCode.SYSTEM_ERROR,e.getMessage());
         }

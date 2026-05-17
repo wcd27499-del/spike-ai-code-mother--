@@ -68,7 +68,7 @@ public class AppController {
         //将应用名称设置为前12位
         app.setAppName(initPrompt.substring(0,Math.min(initPrompt.length(),12)));
         //暂时设置为多文件生成
-        app.setCodeGenType(CodeGenTypeEnum.MULTI_FILE.getValue());
+        app.setCodeGenType(CodeGenTypeEnum.VUE_PROJECT.getValue());
         //保存进入数据库
         boolean result = appService.save(app);
         //判断是否插入成功，插入失败则输出操作失败
