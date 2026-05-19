@@ -4,6 +4,7 @@ import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.service.IService;
 import com.spike.spikeaicodemother.genresult.entity.App;
 import com.spike.spikeaicodemother.genresult.entity.User;
+import com.spike.spikeaicodemother.model.dto.app.AppAddRequest;
 import com.spike.spikeaicodemother.model.dto.app.AppQueryRequest;
 import com.spike.spikeaicodemother.model.vo.AppVO;
 import reactor.core.publisher.Flux;
@@ -17,6 +18,10 @@ import java.util.List;
  */
 public interface AppService extends IService<App> {
 
+
+
+
+    Long createApp(AppAddRequest appAddRequest, User loginUser);
 
     /**
      * 获取App脱敏类
