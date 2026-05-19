@@ -22,58 +22,113 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.io.File;
 import java.time.Duration;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class WebScreenshotUtils {
 
-    private static final WebDriver webDriver;
+    private static WebDriver webDriver;
+    private static final int DEFAULT_WIDTH = 1600;
+    private static final int DEFAULT_HEIGHT = 900;
 
+    // 单线程执行器（保证所有截图任务串行执行）
+    private static final ExecutorService executor = Executors.newSingleThreadExecutor();
+
+    // 初始化 webDriver（静态块中）
     static {
-        final int DEFAULT_WIDTH = 1600;
-        final int DEFAULT_HEIGHT = 900;
-        webDriver = initChromeDriver(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        initWebDriver();
     }
-    public static String saveWebPageScreenshot(String webUrl){
-        if (StrUtil.isBlank(webUrl)){
+
+    private static synchronized void initWebDriver() {
+        if (webDriver == null) {
+            webDriver = initChromeDriver(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        }
+    }
+
+    /**
+     * 对外提供的截图方法（同步等待结果）
+     * 内部通过单线程执行器排队，避免并发问题
+     */
+    public static String saveWebPageScreenshot(String webUrl) {
+        if (StrUtil.isBlank(webUrl)) {
             log.error("网页URL不能为空");
             return null;
         }
-        try{
-            //创建临时目录
-            String rootPath=System.getProperty("user.dir")+File.separator+"tmp"+File.separator+"screenshot"
-                    +File.separator+ UUID.randomUUID().toString().substring(0,8);
-            FileUtil.mkdir(rootPath);
-            //图片后缀
-            final String IMAGE_SUFFIX=".png";
-            //创建截图保存路径
-            String imageSavePath=rootPath+File.separator+ RandomUtil.randomNumbers(5)+IMAGE_SUFFIX;
-            //访问网页
-            webDriver.get(webUrl);
-            //等待页面加载完成
-            waitForPAgeLoad(webDriver);
-            //截图
-            byte[] screenshotBytes=((TakesScreenshot)webDriver).getScreenshotAs(OutputType.BYTES);
-            //保存截图
-            saveImages(screenshotBytes,imageSavePath);
-            log.info("原始截图保存成功：{}",imageSavePath);
-            //压缩图片后缀
-            final String COMPRESSION_SUFFIX="_compressed.jpg";
-            String compressedImagePath=rootPath+File.separator+RandomUtil.randomNumbers(5)+COMPRESSION_SUFFIX;
-            compressImage(imageSavePath,compressedImagePath);
-            log.info("压缩图片保存成功:{}",compressedImagePath);
-            //删除原始截图，保存压缩截图
-            FileUtil.del(imageSavePath);
-            return compressedImagePath;
-
-        }catch (Exception e){
-            log.error("网页截图失败：{}",webUrl,e);
+        try {
+            // 提交任务到单线程队列，并同步等待结果
+            Future<String> future = executor.submit(() -> doScreenshot(webUrl));
+            return future.get(60, TimeUnit.SECONDS);  // 超时60秒
+        } catch (Exception e) {
+            log.error("网页截图失败：{}", webUrl, e);
             return null;
+        }
+    }
+
+    /**
+     * 实际截图逻辑（从原方法提取）
+     */
+    private static String doScreenshot(String webUrl) throws Exception {
+        // 检查 webDriver 是否存活，必要时重建
+        checkAndReinitDriver();
+
+        // 创建临时目录
+        String rootPath = System.getProperty("user.dir") + File.separator + "tmp" + File.separator + "screenshot"
+                + File.separator + UUID.randomUUID().toString().substring(0, 8);
+        FileUtil.mkdir(rootPath);
+
+        final String IMAGE_SUFFIX = ".png";
+        String imageSavePath = rootPath + File.separator + RandomUtil.randomNumbers(5) + IMAGE_SUFFIX;
+
+        webDriver.get(webUrl);
+        waitForPAgeLoad(webDriver);
+        byte[] screenshotBytes = ((TakesScreenshot) webDriver).getScreenshotAs(OutputType.BYTES);
+        saveImages(screenshotBytes, imageSavePath);
+        log.info("原始截图保存成功：{}", imageSavePath);
+
+        final String COMPRESSION_SUFFIX = "_compressed.jpg";
+        String compressedImagePath = rootPath + File.separator + RandomUtil.randomNumbers(5) + COMPRESSION_SUFFIX;
+        compressImage(imageSavePath, compressedImagePath);
+        log.info("压缩图片保存成功:{}", compressedImagePath);
+
+        FileUtil.del(imageSavePath);
+        return compressedImagePath;
+    }
+
+    /**
+     * 检查驱动是否可用（防止浏览器进程意外退出）
+     */
+    private static void checkAndReinitDriver() {
+        try {
+            webDriver.getCurrentUrl();
+        } catch (Exception e) {
+            log.warn("WebDriver 不可用，重新初始化");
+            synchronized (WebScreenshotUtils.class) {
+                if (webDriver != null) {
+                    webDriver.quit();
+                }
+                webDriver = initChromeDriver(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+            }
         }
     }
 
     @PreDestroy
-    public void destroy() {
-        webDriver.quit();
+    public  void destroy() {
+        if (webDriver != null) {
+            webDriver.quit();//关闭浏览器进程，释放系统资源
+        }
+        executor.shutdown();//停止接受新任务，等待已提交任务执行完成
+        try {
+            //等待最多 30 秒让正在执行的任务完成，
+            if (!executor.awaitTermination(30, TimeUnit.SECONDS)) {
+                executor.shutdownNow();//如果超时，强制终止未完成的任务（会中断工作线程
+            }
+        } catch (InterruptedException e) {
+            executor.shutdownNow();
+            Thread.currentThread().interrupt();
+        }
     }
 
 
