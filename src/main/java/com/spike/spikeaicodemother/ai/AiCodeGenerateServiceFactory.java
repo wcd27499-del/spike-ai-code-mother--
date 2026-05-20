@@ -5,6 +5,7 @@ package com.spike.spikeaicodemother.ai;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.spike.spikeaicodemother.core.tool.FileWriteTool;
+import com.spike.spikeaicodemother.core.tool.ToolManager;
 import com.spike.spikeaicodemother.exception.BusinessException;
 import com.spike.spikeaicodemother.exception.ErrorCode;
 import com.spike.spikeaicodemother.genresult.service.ChatHistoryService;
@@ -39,6 +40,8 @@ public class AiCodeGenerateServiceFactory {
     private RedisChatMemoryStore redisChatMemoryStore;
     @Resource
     private ChatHistoryService chatHistoryService;
+    @Resource
+    private ToolManager toolManager;
 
     /**
      * Ai服务缓存实例
@@ -91,7 +94,7 @@ public class AiCodeGenerateServiceFactory {
             case VUE_PROJECT -> AiServices.builder(AiCodeGenerateService.class)
                     .streamingChatModel(reasoningStreamingChatModel)
                     .chatMemoryProvider(memoryId-> chatMemory)
-                    .tools(new FileWriteTool())
+                    .tools(toolManager.getAllTools())
                     .hallucinatedToolNameStrategy(toolExecutionRequest -> ToolExecutionResultMessage
                             .from(toolExecutionRequest,"Error: there is no tool called"+toolExecutionRequest.name()))
                     .build();
