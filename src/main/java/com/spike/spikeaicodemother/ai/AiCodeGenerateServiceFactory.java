@@ -5,6 +5,7 @@ package com.spike.spikeaicodemother.ai;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.spike.spikeaicodemother.ai.guardrail.PromptSafetyInputGuardrail;
+import com.spike.spikeaicodemother.ai.guardrail.RetryOutputGuardrail;
 import com.spike.spikeaicodemother.core.tool.ToolManager;
 import com.spike.spikeaicodemother.exception.BusinessException;
 import com.spike.spikeaicodemother.exception.ErrorCode;
@@ -96,6 +97,8 @@ public class AiCodeGenerateServiceFactory {
                         .chatMemoryProvider(memoryId -> chatMemory)
                         .tools(toolManager.getAllTools())
                         .inputGuardrails(new PromptSafetyInputGuardrail())//添加输入护轨
+                        .outputGuardrails(new RetryOutputGuardrail())//添加输出护轨
+                        .maxSequentialToolsInvocations(20)//最多连续调用20次工具
                         .hallucinatedToolNameStrategy(toolExecutionRequest -> ToolExecutionResultMessage
                                 .from(toolExecutionRequest, "Error: there is no tool called" + toolExecutionRequest.name()))
                         .build();
@@ -108,6 +111,8 @@ public class AiCodeGenerateServiceFactory {
                         .chatModel(chatModel)
                         .streamingChatModel(openAiStreamingChatModel)
                         .inputGuardrails(new PromptSafetyInputGuardrail())
+                        .outputGuardrails(new RetryOutputGuardrail())
+                        .maxSequentialToolsInvocations(20)//最多连续调用20次工具
                         .chatMemory(chatMemory)
                         .build();
             }
