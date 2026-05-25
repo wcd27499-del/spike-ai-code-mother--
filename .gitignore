@@ -1,5 +1,6 @@
 ### CUSTOM ###
 application-local.yml
+application-prod.yaml
 HELP.md
 target/
 .mvn/wrapper/maven-wrapper.jar
