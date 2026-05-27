@@ -166,8 +166,11 @@ public class AppServiceImpl extends ServiceImpl<AppMapper, App>  implements AppS
         if (appList == null) {
             return new ArrayList<>();
         }
-        Set<Long> userIds = appList.stream().map(app -> app.getUserId()).collect(Collectors.toSet());
-        Map<Long, UserVO> userVOMap = userService.
+        Set<Long> userIds = appList.stream().
+                map(app -> app.getUserId()).
+                filter(id->id!=null).
+                collect(Collectors.toSet());
+        Map<Long, UserVO> userVOMap = userIds.isEmpty() ? Map.of() : userService.
                 listByIds(userIds).stream().
                 collect(Collectors.toMap(User::getId, userService::getUserVO));
 
@@ -253,7 +256,7 @@ public class AppServiceImpl extends ServiceImpl<AppMapper, App>  implements AppS
             log.info("Vue 项目构建成功，将部署 dist 目录: {}", distDir.getAbsolutePath());
         }
 // 8. 复制文件到部署目录
-        String deployDirPath = AppConstant.CODE_DEPLOY_ROOT_DIR + File.separator + deployKey;
+        String deployDirPath = AppConstant.CODE_OUTPUT_ROOT_DIR + File.separator + deployKey;
 
         try {
             FileUtil.copyContent(sourceDir,new File(deployDirPath),true);

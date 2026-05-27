@@ -12,9 +12,10 @@ public interface AppConstant {
      */
     Integer DEFAULT_APP_PRIORITY = 0;
     /**
-     * 应用生成目录
+     * 应用生成目录（可通过 -Dcode.output.dir 系统属性覆盖）
      */
-    String CODE_OUTPUT_ROOT_DIR = System.getProperty("user.dir") + "/tmp/code_output";
+    String CODE_OUTPUT_ROOT_DIR = System.getProperty("code.output.dir",
+                    System.getProperty("user.dir") + "/tmp/code_output");
 
     /**
      * 应用部署目录
