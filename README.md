@@ -22,22 +22,23 @@ ai零代码网页生成平台学习版，
 1. 系统全景架构图
  ![系统全景架构图](https://foruda.gitee.com/images/1779969077976732533/72cf5152_16002479.png "屏幕截图")
 1. ai对话和代码核心生成流程
- ![ai对话和代码核心生成流程](https://foruda.gitee.com/images/1779969302906962031/db280c14_16002479.png "屏幕截图")
+ <img width="1195" height="2224" alt="image" src="https://github.com/user-attachments/assets/f5e00b27-52f8-472f-a40b-7242e62b9e7d" />
 1. 部署流程
- ![部署流程](https://foruda.gitee.com/images/1779969593848586309/00e16391_16002479.png "屏幕截图")
-1. AI服务实例生命周期
- ![AI服务实例生命周期](https://foruda.gitee.com/images/1779969767333842409/3e4a1194_16002479.png "屏幕截图")
+ <img width="1202" height="2901" alt="image" src="https://github.com/user-attachments/assets/8c5be3fd-20c2-4453-9be9-0ea2b788b5a1" />
 1. 部署链路流程
- ![部署链路流程](https://foruda.gitee.com/images/1779970107725864766/76dff1c0_16002479.png "屏幕截图")
+ <img width="1194" height="1522" alt="image" src="https://github.com/user-attachments/assets/db9d4545-11bd-416a-a231-630a22dbcbf0" />
+1. AI服务实例生命周期
+<img width="1195" height="2176" alt="image" src="https://github.com/user-attachments/assets/fd7b5efd-7792-4025-a31b-9e5c69af650d" />
 1. 限流和权限拦截链路
- ![限流和权限拦截链路](https://foruda.gitee.com/images/1779970450259832166/ae9826cd_16002479.png "屏幕截图")
+ <img width="1190" height="1243" alt="image" src="https://github.com/user-attachments/assets/27531f30-63c8-4cd4-995d-ba4f44b27c7e" />
  #### 项目概览
 1. 网址主页
- ![网址主页](https://foruda.gitee.com/images/1779971012735186039/fd4a820e_16002479.png "屏幕截图")
+ <img width="2394" height="1223" alt="image" src="https://github.com/user-attachments/assets/865bc1bf-4005-42fe-abb8-be618d13f8ae" />
 1. 用户对话页面以及对话历史
- ![用户对话页面以及对话历史](https://foruda.gitee.com/images/1779971137504800269/3bc15b56_16002479.png "屏幕截图")
+ <img width="2361" height="1222" alt="image" src="https://github.com/user-attachments/assets/a66bf966-b726-412f-b652-95cd76a9a8c9" />
 1. 部署成功时
- ![部署成功时](https://foruda.gitee.com/images/1779971262942622092/10cd2f7a_16002479.png "屏幕截图")
+<img width="2350" height="1228" alt="image" src="https://github.com/user-attachments/assets/a5ccd3ec-b030-4748-8c77-68ce8e1f20ab" />
+
 
 
 
