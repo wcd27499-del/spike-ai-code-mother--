@@ -20,26 +20,26 @@ ai零代码网页生成平台学习版，
 
 
 
-1. #### 架构图
+ #### 架构图
 1. 系统全景架构图
-1. ![系统全景架构图](https://foruda.gitee.com/images/1779969077976732533/72cf5152_16002479.png "屏幕截图")
+ ![系统全景架构图](https://foruda.gitee.com/images/1779969077976732533/72cf5152_16002479.png "屏幕截图")
 1. ai对话和代码核心生成流程
-1. ![ai对话和代码核心生成流程](https://foruda.gitee.com/images/1779969302906962031/db280c14_16002479.png "屏幕截图")
+ ![ai对话和代码核心生成流程](https://foruda.gitee.com/images/1779969302906962031/db280c14_16002479.png "屏幕截图")
 1. 部署流程
-1. ![部署流程](https://foruda.gitee.com/images/1779969593848586309/00e16391_16002479.png "屏幕截图")
+ ![部署流程](https://foruda.gitee.com/images/1779969593848586309/00e16391_16002479.png "屏幕截图")
 1. AI服务实例生命周期
-1. ![AI服务实例生命周期](https://foruda.gitee.com/images/1779969767333842409/3e4a1194_16002479.png "屏幕截图")
+ ![AI服务实例生命周期](https://foruda.gitee.com/images/1779969767333842409/3e4a1194_16002479.png "屏幕截图")
 1. 部署链路流程
-1. ![部署链路流程](https://foruda.gitee.com/images/1779970107725864766/76dff1c0_16002479.png "屏幕截图")
+ ![部署链路流程](https://foruda.gitee.com/images/1779970107725864766/76dff1c0_16002479.png "屏幕截图")
 1. 限流和权限拦截链路
-1. ![限流和权限拦截链路](https://foruda.gitee.com/images/1779970450259832166/ae9826cd_16002479.png "屏幕截图")
-1. #### 项目概览
+ ![限流和权限拦截链路](https://foruda.gitee.com/images/1779970450259832166/ae9826cd_16002479.png "屏幕截图")
+ #### 项目概览
 1. 网址主页
-1. ![网址主页](https://foruda.gitee.com/images/1779971012735186039/fd4a820e_16002479.png "屏幕截图")
+ ![网址主页](https://foruda.gitee.com/images/1779971012735186039/fd4a820e_16002479.png "屏幕截图")
 1. 用户对话页面以及对话历史
-1. ![用户对话页面以及对话历史](https://foruda.gitee.com/images/1779971137504800269/3bc15b56_16002479.png "屏幕截图")
+ ![用户对话页面以及对话历史](https://foruda.gitee.com/images/1779971137504800269/3bc15b56_16002479.png "屏幕截图")
 1. 部署成功时
-1. ![部署成功时](https://foruda.gitee.com/images/1779971262942622092/10cd2f7a_16002479.png "屏幕截图")
+ ![部署成功时](https://foruda.gitee.com/images/1779971262942622092/10cd2f7a_16002479.png "屏幕截图")
 
 
 
