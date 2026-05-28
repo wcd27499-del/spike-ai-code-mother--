@@ -18,6 +18,19 @@ ai零代码网页生成平台学习版，
 1. 前端  Vue3+TypeScript+Ant Design Vue 4
 1. 部署 Nginx+OpenResty+HTTPS
 
+ #### 架构图
+1. 系统全景架构图
+ ![系统全景架构图](https://foruda.gitee.com/images/1779969077976732533/72cf5152_16002479.png "屏幕截图")
+1. ai对话和代码核心生成流程
+ ![ai对话和代码核心生成流程](https://foruda.gitee.com/images/1779969302906962031/db280c14_16002479.png "屏幕截图")
+1. 部署流程
+ ![部署流程](https://foruda.gitee.com/images/1779969593848586309/00e16391_16002479.png "屏幕截图")
+1. AI服务实例生命周期
+ ![AI服务实例生命周期](https://foruda.gitee.com/images/1779969767333842409/3e4a1194_16002479.png "屏幕截图")
+1. 部署链路流程
+ ![部署链路流程](https://foruda.gitee.com/images/1779970107725864766/76dff1c0_16002479.png "屏幕截图")
+1. 限流和权限拦截链路
+ ![限流和权限拦截链路](https://foruda.gitee.com/images/1779970450259832166/ae9826cd_16002479.png "屏幕截图")
 
 
 
